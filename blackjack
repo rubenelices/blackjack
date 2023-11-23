@@ -1,0 +1,116 @@
+import random
+
+cartas = {
+    chr(0x1f0a1): 11,
+    chr(0x1f0a2): 2,
+    chr(0x1f0a3): 3,
+    chr(0x1f0a4): 4,
+    chr(0x1f0a5): 5,
+    chr(0x1f0a6): 6,
+    chr(0x1f0a7): 7,
+    chr(0x1f0a8): 8,
+    chr(0x1f0a9): 9,
+    chr(0x1f0aa): 10,
+    chr(0x1f0ab): 10,
+    chr(0x1f0ad): 10,
+    chr(0x1f0ae): 10,
+}
+
+lista_de_cartas = list(cartas.keys())
+
+def preguntar_otra_carta():
+    mano_jugador2 = "n"
+    while True:
+        pregunta = input ("¿Quieres otra carta? si (s) no (n): ")
+        try:
+            pregunta = str(pregunta)
+            if pregunta == "s":
+                mano_jugador2 = [obtener_carta()]
+                break 
+            elif pregunta == "n":
+                break
+            else:
+                print("Esa letra no es válida")
+        except:
+            print("Esa no es una letra válida")
+    return mano_jugador2
+
+
+def iniciar_juego():
+    while True:
+        inicio = input("Teclea e para empezar el juego: ")
+        try:
+            inicio = str(inicio)
+            if inicio == "e":
+                break
+            else:
+                print("Esa letra no es la que se indica")
+        except:
+            print("Si lo que quieres es inciar debes pulsar la tecla e")
+    return inicio         
+
+
+def obtener_carta():
+    return random.choice(lista_de_cartas)
+
+# Ambos, crupier y jugador obtienen dos cartas al azar
+
+iniciar_juego()
+
+mano_jugador = [obtener_carta(), obtener_carta()]
+mano_crupier = [obtener_carta(), obtener_carta()]
+
+
+def calcular_puntuacion(mano):
+    puntuacion = sum(cartas[carta] for carta in mano)
+
+    # Si tienes un As y te pasas de 21, hacer que automáticamente el As valga 1 en lugar de 11
+    if chr(0x1f0a1) in mano and puntuacion > 21:
+        puntuacion -= 10
+    
+    return puntuacion
+
+
+puntuacion_jugador = calcular_puntuacion(mano_jugador)
+puntuacion_crupier = calcular_puntuacion(mano_crupier)
+
+
+print("Mano del jugador:", mano_jugador)
+
+print("Puntuación del jugador:", puntuacion_jugador)
+
+print("mano del crupier:", mano_crupier)
+
+print("Puntuacion del crupier:", puntuacion_crupier)
+
+
+mano_jugador2 = preguntar_otra_carta()
+if mano_jugador2 != "n":
+    puntuacion_jugador = calcular_puntuacion(mano_jugador + mano_jugador2)
+    print("Mano del jugador:", mano_jugador + mano_jugador2)
+
+    print("Puntuación del jugador:", puntuacion_jugador)
+
+    print("mano del crupier:", mano_crupier)
+
+    print("Puntuacion del crupier:", puntuacion_crupier)
+
+
+if puntuacion_jugador > 21:
+    print("Te has pasado de 21. ¡El crupier gana!")
+
+elif puntuacion_crupier > 21:
+    print("El crupier se ha pasado de 21. ¡Has ganado!")
+
+elif puntuacion_jugador > 21 or puntuacion_crupier > 21:
+    print("¡El crupier gana!")
+
+elif puntuacion_jugador > puntuacion_crupier:
+    print("¡Has ganado al crupier!")
+
+elif puntuacion_jugador < puntuacion_crupier:
+    print("El crupier gana.")
+
+else:
+    print("Empate.")
+
